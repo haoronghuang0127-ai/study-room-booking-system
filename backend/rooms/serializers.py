@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Building, Room
+from .models import Building, Room, Equipment
 
 class RoomSerializer(serializers.ModelSerializer):
     building = BuildingSerializer(read_only=True)
@@ -14,3 +14,9 @@ class BuildingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Building
         fields = ['id', 'name', 'campus_area', 'opening_hours']
+
+
+class EquipmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Equipment
+        fields = ['id', 'name', 'status']

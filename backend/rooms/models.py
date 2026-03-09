@@ -19,3 +19,11 @@ class Building(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+class Equipment(models.Model):
+    name = models.CharField(max_length=100)
+    status = models.CharField(max_length=50, default='available')
+
+    def __str__(self):
+        return self.name

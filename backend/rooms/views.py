@@ -1,6 +1,6 @@
 from rest_framework import generics, permissions
 from .models import Building, Room
-from .serializers import BuildingSerializer, RoomSerializer, RoomCreateUpdateSerializer
+from .serializers import BuildingSerializer, RoomSerializer
 
 
 class BuildingListView(generics.ListAPIView):
