@@ -15,8 +15,23 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+
+from config.routes import ApiPrefix
 
 urlpatterns = [
+    # add the url for the admin, using the admin.site from django
     path('admin/', admin.site.urls),
+
+    # using the api/auth/ prefix path for the users urls
+    path(ApiPrefix.AUTH, include('users.urls')),
+
+    # using the api/rooms/ prefix path for the rooms urls
+    path(ApiPrefix.ROOMS, include('rooms.urls')),
+
+    # using the api/bookings/ prefix path for the bookings urls
+    path(ApiPrefix.BOOKINGS, include('bookings.urls')),
+
+    # using the api/reviews/ prefix path for the reviews urls
+    path(ApiPrefix.REVIEWS, include('reviews.urls')),
 ]
