@@ -1,0 +1,15 @@
+import { DashboardOutlined, HomeOutlined, CheckSquareOutlined } from '@ant-design/icons';
+import BaseLayout from './BaseLayout';
+import type { NavigationItem } from '../../types/navigation';
+
+// Define the navigation items
+const items: NavigationItem[] = [
+  { key: '/admin', icon: <DashboardOutlined />, label: 'Dashboard' },
+  { key: '/admin/rooms', icon: <HomeOutlined />, label: 'Room Management' },
+  { key: '/admin/requests', icon: <CheckSquareOutlined />, label: 'Booking Requests' },
+];
+
+// Export the AdminLayout component using the BaseLayout
+export default function AdminLayout() {
+  return <BaseLayout items={items} defaultPath="/admin" />;
+}
