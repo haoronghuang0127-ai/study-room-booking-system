@@ -9,5 +9,5 @@ export type { LoginPayload, RegisterPayload, TokenResponse, User } from './auth'
 export type { Booking, BookingCreatePayload } from './booking';
 
 
-// Import the types from the room
-export type { Building, Equipment, Room } from './room';
+// Import the types from the review
+export type { Review, ReviewCreatePayload } from './review';
