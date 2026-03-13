@@ -1,4 +1,4 @@
-import { DashboardOutlined, HomeOutlined, CheckSquareOutlined } from '@ant-design/icons';
+import { BankOutlined, CheckSquareOutlined, DashboardOutlined, HomeOutlined, ToolOutlined } from '@ant-design/icons';
 import BaseLayout from './BaseLayout';
 import type { NavigationItem } from '../../types/navigation';
 
@@ -6,6 +6,8 @@ import type { NavigationItem } from '../../types/navigation';
 const items: NavigationItem[] = [
   { key: '/admin', icon: <DashboardOutlined />, label: 'Dashboard' },
   { key: '/admin/rooms', icon: <HomeOutlined />, label: 'Room Management' },
+  { key: '/admin/buildings', icon: <BankOutlined />, label: 'Building Management' },
+  { key: '/admin/equipments', icon: <ToolOutlined />, label: 'Equipment Mgmt' },
   { key: '/admin/requests', icon: <CheckSquareOutlined />, label: 'Booking Requests' },
 ];
 

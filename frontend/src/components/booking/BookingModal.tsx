@@ -1,6 +1,6 @@
 import { Button, DatePicker, Form, Modal, TimePicker, message } from 'antd';
 import dayjs from 'dayjs';
-import { createBooking } from '../api/bookings';
+import { createBooking } from '../../api/bookings';
 // import { useState } from 'react';
 
 // Props interface for the BookingModal component, defining the expected props and their types
@@ -21,7 +21,7 @@ export default function BookingModal({ open, roomId, roomName, onClose, onSucces
   const handleFinish = async (values: any) => {
     try {
       
-
+      // Call the createBooking function from the API to create a new booking
       await createBooking({
         room: roomId,
         booking_date: values.booking_date.format('YYYY-MM-DD'),
@@ -56,15 +56,21 @@ export default function BookingModal({ open, roomId, roomName, onClose, onSucces
       <Form layout="vertical" form={form} onFinish={handleFinish}>
         {/* Form item for selecting the booking date, with a date picker that disables past dates. */}
         <Form.Item label="Date" name="booking_date" rules={[{ required: true, message: 'Please select a date' }]}>
-          <DatePicker style={{ width: '100%' }} disabledDate={(current) => current && current < dayjs().startOf('day')} />
+          <DatePicker style={{ width: '100%' }} 
+          placeholder="Select a date or input the date manually (YYYY-MM-DD)"
+          disabledDate={(current) => current && current < dayjs().startOf('day')} />
         </Form.Item>
 
         {/* Form items for selecting the start and end times, with time pickers that allow selection in 30-minute increments. */}
         <Form.Item label="Start Time" name="start_time" rules={[{ required: true, message: 'Please select a start time' }]}>
-          <TimePicker style={{ width: '100%' }} format="HH:mm" minuteStep={30} />
+          <TimePicker style={{ width: '100%' }} 
+          placeholder="Select a time or input the time manually (HH:mm)"
+          format="HH:mm" minuteStep={30} />
         </Form.Item>
         <Form.Item label="End Time" name="end_time" rules={[{ required: true, message: 'Please select an end time' }]}>
-          <TimePicker style={{ width: '100%' }} format="HH:mm" minuteStep={30} />
+          <TimePicker style={{ width: '100%' }} 
+          placeholder="Select a time or input the time manually (HH:mm)"
+          format="HH:mm" minuteStep={30} />
         </Form.Item>
 
           {/* Form item for the submit button, which will trigger the form submission when clicked. */}

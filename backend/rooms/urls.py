@@ -1,40 +1,53 @@
-from rest_framework import generics, permissions
-from .models import Building, Room
-from .serializers import BuildingSerializer, RoomSerializer, RoomCreateUpdateSerializer
+from django.urls import path
+from .views import (
+    BuildingListView,
+    EquipmentListView,
+    RoomListView,
+    RoomDetailView,
+    AdminBuildingCreateView,
+    AdminBuildingUpdateView,
+    AdminBuildingDeleteView,
+    AdminEquipmentCreateView,
+    AdminEquipmentUpdateView,
+    AdminEquipmentDeleteView,
+    AdminRoomCreateView,
+    AdminRoomUpdateView,
+    AdminRoomDeleteView,
+)
 
+from config.routes import RoomsRoutes
 
-# define a view for listing all buildings
-class BuildingListView(generics.ListAPIView):
-    queryset = Building.objects.all()
-    serializer_class = BuildingSerializer
-    permission_classes = [permissions.AllowAny]
+app_name = RoomsRoutes.APP_NAME
 
-# define a view for listing all rooms
-class RoomListView(generics.ListAPIView):
-    queryset = Room.objects.all()
-    serializer_class = RoomSerializer
-    permission_classes = [permissions.AllowAny]
+urlpatterns = [
+    # add the url for the building list
+    path(RoomsRoutes.BUILDING_LIST_PATH, BuildingListView.as_view(), name=RoomsRoutes.BUILDING_LIST_NAME),
+    # add the url for the equipment list
+    path(RoomsRoutes.EQUIPMENT_LIST_PATH, EquipmentListView.as_view(), name=RoomsRoutes.EQUIPMENT_LIST_NAME),
+    # add the url for the room list
+    path(RoomsRoutes.ROOM_LIST_PATH, RoomListView.as_view(), name=RoomsRoutes.ROOM_LIST_NAME),
+    # add the url for the room detail
+    path(RoomsRoutes.ROOM_DETAIL_PATH, RoomDetailView.as_view(), name=RoomsRoutes.ROOM_DETAIL_NAME),
 
-# define a view for retrieving a single room
-class RoomDetailView(generics.RetrieveAPIView):
-    queryset = Room.objects.all()
-    serializer_class = RoomSerializer
-    permission_classes = [permissions.AllowAny]
+    # add the url for the admin
+    # add the url for building create 
+    path(RoomsRoutes.ADMIN_BUILDING_CREATE_PATH, AdminBuildingCreateView.as_view(), name=RoomsRoutes.ADMIN_BUILDING_CREATE_NAME),
+    # add the url for building update
+    path(RoomsRoutes.ADMIN_BUILDING_UPDATE_PATH, AdminBuildingUpdateView.as_view(), name=RoomsRoutes.ADMIN_BUILDING_UPDATE_NAME),
+    # add the url for building delete
+    path(RoomsRoutes.ADMIN_BUILDING_DELETE_PATH, AdminBuildingDeleteView.as_view(), name=RoomsRoutes.ADMIN_BUILDING_DELETE_NAME),
 
-# define a view for creating a new room
-class AdminRoomCreateView(generics.CreateAPIView):
-    queryset = Room.objects.all()
-    serializer_class = RoomCreateUpdateSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # add the url for equipment create
+    path(RoomsRoutes.ADMIN_EQUIPMENT_CREATE_PATH, AdminEquipmentCreateView.as_view(), name=RoomsRoutes.ADMIN_EQUIPMENT_CREATE_NAME),
+    # add the url for equipment update
+    path(RoomsRoutes.ADMIN_EQUIPMENT_UPDATE_PATH, AdminEquipmentUpdateView.as_view(), name=RoomsRoutes.ADMIN_EQUIPMENT_UPDATE_NAME),
+    # add the url for equipment delete
+    path(RoomsRoutes.ADMIN_EQUIPMENT_DELETE_PATH, AdminEquipmentDeleteView.as_view(), name=RoomsRoutes.ADMIN_EQUIPMENT_DELETE_NAME),
 
-# define a view for updating an existing room
-class AdminRoomUpdateView(generics.UpdateAPIView):
-    queryset = Room.objects.all()
-    serializer_class = RoomCreateUpdateSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-# define a view for deleting a room
-class AdminRoomDeleteView(generics.DestroyAPIView):
-    queryset = Room.objects.all()
-    serializer_class = RoomCreateUpdateSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # add the url for room create
+    path(RoomsRoutes.ADMIN_CREATE_PATH, AdminRoomCreateView.as_view(), name=RoomsRoutes.ADMIN_CREATE_NAME),
+    # add the url for room update
+    path(RoomsRoutes.ADMIN_UPDATE_PATH, AdminRoomUpdateView.as_view(), name=RoomsRoutes.ADMIN_UPDATE_NAME),
+    # add the url for room delete
+    path(RoomsRoutes.ADMIN_DELETE_PATH, AdminRoomDeleteView.as_view(), name=RoomsRoutes.ADMIN_DELETE_NAME),
+]

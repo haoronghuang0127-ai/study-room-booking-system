@@ -23,3 +23,27 @@ export interface Room {
   building: Building;
   equipment: Equipment[];
 }
+
+
+// Interface for create/update room payload
+export interface RoomPayload {
+  name: string;
+  capacity: number;
+  location: string;
+  is_active: boolean;
+  building: number;
+  equipment: number[];
+}
+
+// Interface for create building payload
+export interface BuildingPayload {
+  name: string;
+  campus_area: string;
+  opening_hours: string;
+}
+
+// Interface for create equipment payload
+export interface EquipmentPayload {
+  name: string;
+  status: string;
+}

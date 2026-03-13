@@ -34,13 +34,21 @@ export default function BaseLayout({items, defaultPath}: BaseLayoutProps) {
 
             {/* Render the sidebar and content */}
             <Layout>
-            {/* Render the sidebar with a breakpoint for responsiveness, and a menu with navigation items */}
-            <Layout.Sider breakpoint="lg" collapsedWidth="0" width={220} theme="light">
-                <Menu mode="inline" selectedKeys={[selected]} items={items} onClick={handleMenuClick} style={{ height: '100%', borderInlineEnd: 0 }} />
-            </Layout.Sider>
-            <Layout.Content style={{ padding: 24 }}>
-                <Outlet />
-            </Layout.Content>
+              {/* Render the sidebar with a breakpoint for responsiveness, and a menu with navigation items */}
+              <Layout.Sider breakpoint="lg" collapsedWidth="0" width={220} theme="light">
+                  <Menu
+                    mode="inline"
+                    selectedKeys={selected ? [selected] : []}
+                    items={items}
+                    onClick={handleMenuClick}
+                    style={{ height: '100%', borderInlineEnd: 0 }}
+                  />
+              </Layout.Sider>
+
+              
+              <Layout.Content style={{ padding: 24 }}>
+                  <Outlet />
+              </Layout.Content>
             </Layout>
 
         </Layout>
@@ -50,28 +58,32 @@ export default function BaseLayout({items, defaultPath}: BaseLayoutProps) {
 
 // function to determine the selected menu item based on the current location
 function getSelectedKey(location: any, items: NavigationItem[], defaultPath: string){
+  // Get the current pathname from the location object
+  const pathname = location.pathname;
 
-  // Find the menu item that matches the current location
-  const menuItem  = items.find(
-    (item) => {
+  // Keep defaultPath for the base route
+  if (pathname === defaultPath) {
+    return defaultPath;
+  }
 
-      // Get the current pathname from the location object
-      const pathname = location.pathname;
-
-      // Check if the current location is an exact match for the menu item key
-      const isExactMatch = pathname === item.key;
-
-      // Check if the current location is a subpath of the menu item key (e.g., /student/rooms matches /student)
-      const isSubPathMatch = pathname.startsWith(`${item.key}/`);
-
-      // Return true if either an exact match or a subpath match is found
-      return isExactMatch || isSubPathMatch;
-
+  // First check whether the current route exactly matches a menu item
+  for (const item of items) {
+    if (pathname === item.key) {
+      return item.key;
     }
-  );
+  }
 
-  // If a matching item is found, return its key; otherwise
-  const selectedKey = menuItem?.key || defaultPath;
+  // If it is a nested route, keep the longest matched menu key
+  let selectedKey = '';
 
+  for (const item of items) {
+    const isSubPathMatch = pathname.startsWith(`${item.key}/`);
+
+    if (isSubPathMatch && item.key.length > selectedKey.length) {
+      selectedKey = item.key;
+    }
+  }
+
+  // If no matching menu item is found, return an empty string
   return selectedKey;
 }

@@ -1,7 +1,7 @@
 import { Col, Empty, Input, Row, Select, Space, Typography } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { getBuildings, getRooms } from '../../api/rooms';
-import RoomCard from '../../components/RoomCard';
+import RoomCard from '../../components/room/RoomCard';
 import type { Building, Room } from '../../types';
 
 export default function RoomsPage() {

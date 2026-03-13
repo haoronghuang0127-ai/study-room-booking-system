@@ -1,6 +1,6 @@
 import { Button, Card, Descriptions, Space, Tag, Typography } from 'antd';
 import { Link } from 'react-router-dom';
-import type { Room } from '../types';
+import type { Room } from '../../types';
 
 export default function RoomCard({ room }: { room: Room }) {
   return (

@@ -1,8 +1,14 @@
-import { Button, Layout, Space, Typography } from 'antd';
+import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Button, Dropdown, Layout, Space, Typography, type MenuProps } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { getProfileRouteByRole } from '../utils/defaultRoute';
 
 export default function AppHeader() {
+  // Application name
+  const appName = 'StudyNest Reserve';
+
+
   // Get the user information and logout function from the AuthContext
   const { user, logout } = useAuth();
 
@@ -15,6 +21,36 @@ export default function AppHeader() {
     navigate('/login');
   };
 
+
+  // Handle dropdown menu click
+  const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
+    if (!user) {
+      return;
+    }
+
+    if (key === 'profile') {
+      navigate(getProfileRouteByRole(user.role));
+      return;
+    }
+
+    if (key === 'logout') {
+      handleLogout();
+    }
+  };
+
+  const menuItems: MenuProps['items'] = [
+    {
+      key: 'profile',
+      icon: <UserOutlined />,
+      label: 'Profile',
+    },
+    {
+      key: 'logout',
+      icon: <LogoutOutlined />,
+      label: 'Logout',
+    },
+  ];
+
   //
   return (
     // Use Ant Design's Layout.Header component to create a header with a white background and a bottom border
@@ -23,21 +59,46 @@ export default function AppHeader() {
       {/* Use Space to layout the title and user actions with space between them */}
       <Space style={{ width: '100%', justifyContent: 'space-between' }}>
 
-        {/* Link the title to the home page using react-router's Link component */}
-        <Link to="/">
-          <Typography.Title level={4} style={{ margin: 0 }}>
-            Study Room Booking
-          </Typography.Title>
+        {/* Use Link to create a link to the home page */}
+        <Link to="/" style={{ color: 'inherit' }}>
+
+          {/* Use Space to layout the logo and title with some spacing */}
+          <Space size={14} align="center" style={{display: 'flex', alignItems: 'center', lineHeight: 1}}>
+
+            {/* Logo of the application */}
+            <img
+            src="/studynest-mark.png"
+            alt={`${appName} logo`}
+            style={{
+              width: 34,
+              height: 34,
+              objectFit: 'contain',
+              display: 'block',
+              flexShrink: 0
+            }}
+          />
+
+            {/* Title of the application */}
+            <Typography.Title level={4} style={{ margin: 0, lineHeight: 1, transform: 'translateY(1px)'}}>
+              {appName}
+            </Typography.Title>
+            
+          </Space>
+          
         </Link>
 
         {/* If the user is logged in, show their username and role, 
         along with a logout button. Otherwise, show login and register buttons. */}
         <Space>
           {user ? (
-            <>
-              <Typography.Text>{user.username} ({user.role})</Typography.Text>
-              <Button onClick={handleLogout}>Logout</Button>
-            </>
+            <Dropdown menu={{ items: menuItems, onClick: handleMenuClick }} trigger={['click']}>
+              <Button type="text" style={{ height: 'auto', padding: 4 }}>
+                <Space size="small">
+                  <Avatar icon={<UserOutlined />} />
+                  <Typography.Text>{user.username}</Typography.Text>
+                </Space>
+              </Button>
+            </Dropdown>
           ) : (
             <>
               <Link to="/login"><Button>Login</Button></Link>
@@ -45,6 +106,7 @@ export default function AppHeader() {
             </>
           )}
         </Space>
+
       </Space>
     </Layout.Header>
   );

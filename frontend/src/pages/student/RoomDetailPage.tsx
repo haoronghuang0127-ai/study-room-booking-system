@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { createReview, getReviews } from '../../api/reviews';
 import { getRoomDetail } from '../../api/rooms';
-import BookingModal from '../../components/BookingModal';
+import BookingModal from '../../components/booking/BookingModal';
 import LoadingScreen from '../../components/LoadingScreen';
 import type { Review, Room } from '../../types';
 import { formatDateTime } from '../../utils/format';

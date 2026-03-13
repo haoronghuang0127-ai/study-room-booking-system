@@ -13,4 +13,11 @@ export type { Booking, BookingCreatePayload } from './booking';
 export type { Review, ReviewCreatePayload } from './review';
 
 // Import the types from the room
-export type { Building, Equipment, Room } from './room';
+export type { 
+    Building,
+    Equipment,
+    Room,
+    RoomPayload,
+    BuildingPayload,
+    EquipmentPayload
+} from './room';
