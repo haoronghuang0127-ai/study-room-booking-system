@@ -1,7 +1,8 @@
-import { Button, Card, Descriptions, List, Rate, Space, Tag, Typography, message } from 'antd';
+import { ArrowLeftOutlined } from '@ant-design/icons';
+import { Button, Card, Descriptions, List, Rate, Space, Tag, Typography } from 'antd';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { createReview, getReviews } from '../../api/reviews';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getReviews } from '../../api/reviews';
 import { getRoomDetail } from '../../api/rooms';
 import BookingModal from '../../components/booking/BookingModal';
 import LoadingScreen from '../../components/LoadingScreen';
@@ -11,6 +12,10 @@ import { formatDateTime } from '../../utils/format';
 export default function RoomDetailPage() {
   // Get the room ID from the URL
   const { id } = useParams();
+
+  // Get the navigate function
+  const navigate = useNavigate();
+
   // Set up room, reviews, loading, and bookingOpen state variables
   const [room, setRoom] = useState<Room | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -55,18 +60,14 @@ export default function RoomDetailPage() {
     return <Typography.Text>Room not found.</Typography.Text>;
   }
 
-  const handleQuickReview = async () => {
-    try {
-      await createReview({ room: room.id, rating: 5, comment: 'Good room for study.' });
-      message.success('Review submitted');
-      await loadData();
-    } catch {
-      message.error('Failed to submit review');
-    }
-  };
 
   return (
     <Space direction="vertical" size="large" style={{ width: '100%' }}>
+      {/* Render a back button */}
+      <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/student/rooms')}>
+        Back to Browse Rooms
+      </Button>
+
 
       {/* Render a card with room details */}
       <Card
@@ -88,8 +89,17 @@ export default function RoomDetailPage() {
 
         {/* Render action buttons */}
         <Space style={{ marginTop: 16 }} wrap>
-          <Button type="primary" onClick={() => setBookingOpen(true)}>Book this room</Button>
-          <Button onClick={handleQuickReview}>Leave quick 5-star review</Button>
+          <Button
+            type="primary"
+            disabled={!room.is_active}
+            onClick={() => {
+              if (room.is_active) {
+                setBookingOpen(true);
+              }
+            }}
+          >
+            {room.is_active ? 'Book this room' : 'Room is inactive'}
+          </Button>
         </Space>
       </Card>
 

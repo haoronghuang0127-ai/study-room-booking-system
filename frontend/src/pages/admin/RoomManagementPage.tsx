@@ -1,8 +1,8 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Form, Input, InputNumber, Modal, Select, Space, Switch, Table, Typography, message } from 'antd';
 import { useEffect, useState } from 'react';
-import { deleteRoom, getBuildings, getRooms, updateRoom, createRoom } from '../../api/rooms';
-import type { Building, Room } from '../../types';
+import { deleteRoom, getBuildings, getEquipments, getRooms, updateRoom, createRoom } from '../../api/rooms';
+import type { Building, Equipment, Room } from '../../types';
 
 export default function RoomManagementPage() {
   // set rooms, buildings, loading, open, editing
@@ -11,21 +11,33 @@ export default function RoomManagementPage() {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Room | null>(null);
+
+  // set equipments
+  const [equipments, setEquipments] = useState<Equipment[]>([]);
   
   // set form
   const [form] = Form.useForm();
 
   // load data
   const loadData = async () => {
+    // set loading to true
     setLoading(true);
-    try {
-      // get rooms and buildings
-      const [roomData, buildingData] = await Promise.all([getRooms(), getBuildings()]);
 
-      // set rooms and buildings
+
+    try {
+      // get rooms, buildings and equipments
+      const [roomData, buildingData, equipmentData] = await Promise.all([
+      getRooms(),
+      getBuildings(),
+      getEquipments(),
+    ]);
+
+      // set rooms, buildings and equipments
       setRooms(roomData);
       setBuildings(buildingData);
+      setEquipments(equipmentData);
     } finally {
+      // set loading to false
       setLoading(false);
     }
   };
@@ -108,9 +120,13 @@ export default function RoomManagementPage() {
       // reload
       await loadData();
     } catch (error) {
-      if (error) {
-        // ignore form validation interruption
-      }
+      const hasErrorFields = typeof error === 'object' && error !== null && 'errorFields' in error;
+
+        if (hasErrorFields) {
+          return;
+        }
+
+        message.error(editing ? 'Failed to update room' : 'Failed to create room');
     }
   };
 
@@ -132,6 +148,7 @@ export default function RoomManagementPage() {
           { title: 'Building', render: (_, record: Room) => record.building.name },
           { title: 'Capacity', dataIndex: 'capacity' },
           { title: 'Location', dataIndex: 'location' },
+          { title: 'Equipment', render: (_, record: Room) => record.equipment.length ? record.equipment.map((item) => item.name).join(', ') : 'None'},
           { title: 'Active', render: (_, record: Room) => (record.is_active ? 'Yes' : 'No') },
           {
             title: 'Actions',
@@ -170,9 +187,14 @@ export default function RoomManagementPage() {
           </Form.Item>
 
           {/* equipment */}
-          <Form.Item label="Equipment IDs" name="equipment">
-            <Select mode="tags" placeholder="Enter equipment IDs such as 1,2" tokenSeparators={[',']} />
+          <Form.Item label="Equipment" name="equipment">
+            <Select
+              mode="multiple"
+              placeholder="Select equipment"
+              options={equipments.map((item) => ({ label: item.name, value: item.id }))}
+            />
           </Form.Item>
+
 
           {/* isActive */}
           <Form.Item label="Active" name="is_active" valuePropName="checked"><Switch /></Form.Item>
