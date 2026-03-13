@@ -9,6 +9,9 @@ class BookingSerializer(serializers.ModelSerializer):
     # find the name of the room, set read only to true, not save to database
     room_name = serializers.CharField(source='room.name', read_only=True)
 
+    # add a field to check if the review has been submitted （uysing function get_review_submitted）
+    review_submitted = serializers.SerializerMethodField()
+
     # the serializer for the Booking model
     class Meta:
         model = Booking
@@ -26,10 +29,16 @@ class BookingSerializer(serializers.ModelSerializer):
             'status',
             'processed_by',
             'created_at',
+            'review_submitted',
         ]
         
         # set the fields that are read only
         read_only_fields = ['student', 'status', 'processed_by', 'created_at']
+    
+    # add a field to check if the review has been submitted
+    def get_review_submitted(self, obj):
+        return hasattr(obj, 'review')
+
 
 
 # define a sserializer for creating new bookings
@@ -47,6 +56,9 @@ class BookingCreateSerializer(serializers.ModelSerializer):
         start_time = attrs['start_time']
         end_time = attrs['end_time']
         
+        if not room.is_active:
+            raise serializers.ValidationError("This room is currently inactive and cannot be booked.")
+
         # check if the end time is later than the start time
         if start_time >= end_time:
             raise serializers.ValidationError("End time must be later than start time.")

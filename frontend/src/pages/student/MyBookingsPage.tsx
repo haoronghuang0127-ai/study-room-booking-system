@@ -4,6 +4,8 @@ import { cancelBooking, getMyBookings } from '../../api/bookings';
 import StatusTag from '../../components/StatusTag';
 import type { Booking } from '../../types';
 import { formatDate, formatTime } from '../../utils/format';
+import dayjs from 'dayjs';
+
 
 export default function MyBookingsPage() {
   //  set  bookings and loading state 
@@ -30,11 +32,23 @@ export default function MyBookingsPage() {
     void loadData();
   }, []);
 
+  // check whether an approved booking has already ended
+  const isEndedBooking = (item: Booking) => {
+    return item.status === 'approved' && dayjs(`${item.booking_date} ${item.end_time}`).isBefore(dayjs());
+  };
+
   // filter bookings by status (pending, approved)
-  const upcoming = useMemo(() => bookings.filter(
-      (item) => ['pending', 'approved'].includes(item.status)
-    )
-  , [bookings]);
+  const upcoming = useMemo(() => bookings.filter((item) => {
+    if (item.status === 'pending') {
+      return true;
+    }
+
+    if (item.status === 'approved') {
+      return !isEndedBooking(item);
+    }
+
+    return false;
+  }), [bookings]);
   
   // cancel booking
   const handleCancel = async (id: number) => {
@@ -48,6 +62,9 @@ export default function MyBookingsPage() {
       message.error('Failed to cancel booking');
     }
   };
+
+
+  
 
   return (
     <Card>
