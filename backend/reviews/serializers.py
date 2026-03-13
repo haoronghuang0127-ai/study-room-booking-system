@@ -54,4 +54,5 @@ class ReviewSerializer(serializers.ModelSerializer):
         if hasattr(booking, 'review'):
             raise serializers.ValidationError('This booking has already been reviewed.')
 
+        
         return attrs
