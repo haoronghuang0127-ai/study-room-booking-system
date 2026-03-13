@@ -5,6 +5,7 @@ export interface Review {
   student: number;
   student_username: string;
   room: number;
+  booking?: number | null;
   rating: number;
   comment: string;
   created_at: string;
@@ -12,7 +13,7 @@ export interface Review {
 
 // Interface for creating a review
 export interface ReviewCreatePayload {
-  room: number;
+  booking: number;
   rating: number;
   comment: string;
 }

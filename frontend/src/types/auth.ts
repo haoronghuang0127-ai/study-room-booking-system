@@ -25,3 +25,10 @@ export interface TokenResponse {
   access: string;
   refresh: string;
 }
+
+
+export interface ChangePasswordPayload {
+  current_password: string;
+  new_password: string;
+  confirm_password: string;
+}
