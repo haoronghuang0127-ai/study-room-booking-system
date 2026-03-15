@@ -47,6 +47,10 @@ export default function RoomManagementPage() {
     void loadData();
   }, []);
 
+  const activeRoomCount = rooms.filter((room) => room.is_active).length;
+  const inactiveRoomCount = rooms.length - activeRoomCount;
+
+
   // open create, the click function for the add room button
   const openCreate = () => {
     // set the edit to null because it is a new room
@@ -132,35 +136,92 @@ export default function RoomManagementPage() {
 
   return (
 
-    // main card
-    <Card
-      title={<Typography.Title level={3} style={{ margin: 0 }}>Room Management</Typography.Title>}
-      extra={<Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>Add Room</Button>}
-    >
+    <div className="records-page">
 
-      {/* table */}
-      <Table
-        rowKey="id"
-        loading={loading}
-        dataSource={rooms}
-        columns={[
-          { title: 'Name', dataIndex: 'name' },
-          { title: 'Building', render: (_, record: Room) => record.building.name },
-          { title: 'Capacity', dataIndex: 'capacity' },
-          { title: 'Location', dataIndex: 'location' },
-          { title: 'Equipment', render: (_, record: Room) => record.equipment.length ? record.equipment.map((item) => item.name).join(', ') : 'None'},
-          { title: 'Active', render: (_, record: Room) => (record.is_active ? 'Yes' : 'No') },
-          {
-            title: 'Actions',
-            render: (_, record: Room) => (
-              <Space>
-                <Button icon={<EditOutlined />} onClick={() => openEdit(record)}>Edit</Button>
-                <Button danger icon={<DeleteOutlined />} onClick={() => handleDelete(record.id)}>Delete</Button>
-              </Space>
-            ),
-          },
-        ]}
-      />
+      <div className="records-hero">
+        <div className="records-hero__copy">
+          <Typography.Text className="records-hero__eyebrow">
+            Admin inventory
+          </Typography.Text>
+
+          <Typography.Title level={2} className="records-hero__title">
+            Room Management
+          </Typography.Title>
+
+          <Typography.Paragraph className="records-hero__desc">
+            Create, edit, and review room records, availability, capacity, and assigned equipment.
+          </Typography.Paragraph>
+
+          <div className="records-pills">
+            <span className="records-pill">{rooms.length} total rooms</span>
+            <span className="records-pill">{activeRoomCount} active</span>
+            <span className="records-pill">{inactiveRoomCount} inactive</span>
+          </div>
+        </div>
+
+        <div className="records-hero__aside">
+          <div className="records-hero__panel">
+            <Typography.Text className="records-hero__panel-label">
+              Active rooms
+            </Typography.Text>
+
+            <Typography.Title level={3} className="records-hero__panel-value">
+              {activeRoomCount}
+            </Typography.Title>
+
+            <Typography.Paragraph className="records-hero__panel-copy">
+              {inactiveRoomCount} inactive room{inactiveRoomCount === 1 ? '' : 's'} still need admin attention.
+            </Typography.Paragraph>
+          </div>
+        </div>
+      </div>
+
+      <div className="records-toolbar">
+        <div className="records-toolbar__content">
+          <Typography.Text className="records-toolbar__title">
+            Manage room records
+          </Typography.Text>
+
+          <Typography.Text className="records-toolbar__meta">
+            {rooms.length} room{rooms.length === 1 ? '' : 's'} in the current list
+          </Typography.Text>
+        </div>
+
+        <div className="records-toolbar__actions">
+          <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
+            Add Room
+          </Button>
+        </div>
+      </div>
+
+
+      {/* main card */}
+      <Card className="records-table-card">
+
+        {/* table */}
+        <Table
+          rowKey="id"
+          loading={loading}
+          dataSource={rooms}
+          columns={[
+            { title: 'Name', dataIndex: 'name' },
+            { title: 'Building', render: (_, record: Room) => record.building.name },
+            { title: 'Capacity', dataIndex: 'capacity' },
+            { title: 'Location', dataIndex: 'location' },
+            { title: 'Equipment', render: (_, record: Room) => record.equipment.length ? record.equipment.map((item) => item.name).join(', ') : 'None'},
+            { title: 'Active', render: (_, record: Room) => (record.is_active ? 'Yes' : 'No') },
+            {
+              title: 'Actions',
+              render: (_, record: Room) => (
+                <Space>
+                  <Button icon={<EditOutlined />} onClick={() => openEdit(record)}>Edit</Button>
+                  <Button danger icon={<DeleteOutlined />} onClick={() => handleDelete(record.id)}>Delete</Button>
+                </Space>
+              ),
+            },
+          ]}
+        />
+      </Card>
 
       <Modal
         open={open}
@@ -195,11 +256,12 @@ export default function RoomManagementPage() {
             />
           </Form.Item>
 
-
           {/* isActive */}
           <Form.Item label="Active" name="is_active" valuePropName="checked"><Switch /></Form.Item>
         </Form>
       </Modal>
-    </Card>
+
+    </div>
   );
+
 }

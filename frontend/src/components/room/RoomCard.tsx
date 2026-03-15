@@ -1,43 +1,69 @@
-import { Button, Card, Descriptions, Space, Tag, Typography } from 'antd';
+import { Button, Card, Tag, Typography } from 'antd';
 import { Link } from 'react-router-dom';
 import type { Room } from '../../types';
+import { EnvironmentOutlined, TeamOutlined } from '@ant-design/icons';
+
 
 export default function RoomCard({ room }: { room: Room }) {
   return (
-    // Use Ant Design's Card component to display the room information, 
-    // with the room name as the title and a status tag as an extra element
-    <Card title={room.name} 
-    extra={<Tag color={room.is_active ? 'green' : 'red'}>{room.is_active ? 'Available' : 'Inactive'}</Tag>}>
+    // Use Ant Design's Card component to display a cleaner room overview
+    <Card className="room-card">
 
-      {/* Use Descriptions to layout the room details in a vertical format, with labels and values. */}
-      <Descriptions column={1} size="small">
-        <Descriptions.Item label="Capacity">{room.capacity}</Descriptions.Item>
-        <Descriptions.Item label="Location">{room.location}</Descriptions.Item>
-        <Descriptions.Item label="Building">{room.building?.name}</Descriptions.Item>
-        <Descriptions.Item label="Equipment">
+      {/* Display the room title and status */}
+      <div className="room-card__top">
+        <div>
+          <Typography.Text className="room-card__building">
+            {room.building?.name || 'Building not set'}
+          </Typography.Text>
 
-          {/* Use Space to layout the equipment tags with wrapping. 
-          If there are no equipment items, show a secondary text message. */}
-          <Space wrap>
-            {room.equipment?.length ? 
-            room.equipment.map((item) => <Tag key={item.id}>{item.name}</Tag>) : 
-            <Typography.Text type="secondary">No equipment listed</Typography.Text>}
-          </Space>
+          <Typography.Title level={4} className="room-card__title">
+            {room.name}
+          </Typography.Title>
+        </div>
 
-        </Descriptions.Item>
+        <Tag className={room.is_active ? 'room-card__status room-card__status--active' : 'room-card__status room-card__status--inactive'}>
+          {room.is_active ? 'Available' : 'Inactive'}
+        </Tag>
+      </div>
 
-      </Descriptions>
-      
-      {/* Use Space to layout the action buttons with some margin on top. */}
-      <Space style={{ marginTop: 16 }}>
+      {/* Display the main room facts */}
+      <div className="room-card__stats">
+        <div className="room-chip">
+          <TeamOutlined />
+          <span>{room.capacity} seats</span>
+        </div>
 
-        {/* Link the "View details" button to the room details page passing the room ID in the URL. */}
+        <div className="room-chip">
+          <EnvironmentOutlined />
+          <span>{room.location}</span>
+        </div>
+      </div>
+
+      {/* Display the room equipment */}
+      <div>
+        <Typography.Text className="room-card__section-label">
+          Equipment
+        </Typography.Text>
+
+        <div className="room-card__equipment">
+          {room.equipment?.length ? (
+            room.equipment.map((item) => <Tag key={item.id}>{item.name}</Tag>)
+          ) : (
+            <Typography.Text type="secondary">No equipment listed</Typography.Text>
+          )}
+        </div>
+      </div>
+
+      {/* Link the user to the room detail page */}
+      <div className="room-card__footer">
         <Link to={`/student/rooms/${room.id}`}>
-          <Button type="primary">View details</Button>
+          <Button type="primary" className="room-card__button">
+            View details
+          </Button>
         </Link>
+      </div>
 
-      </Space>
-      
     </Card>
   );
+
 }
