@@ -49,6 +49,11 @@ export default function MyBookingsPage() {
 
     return false;
   }), [bookings]);
+
+
+  const pendingCount = upcoming.filter((item) => item.status === 'pending').length;
+  const approvedUpcomingCount = upcoming.filter((item) => item.status === 'approved').length;
+
   
   // cancel booking
   const handleCancel = async (id: number) => {
@@ -67,31 +72,88 @@ export default function MyBookingsPage() {
   
 
   return (
-    <Card>
-      <Typography.Title level={2}>My Bookings</Typography.Title>
-      <Table
-        rowKey="id"
-        loading={loading}
-        dataSource={upcoming}
-        pagination={{ pageSize: 6 }}
-        columns={[
-          { title: 'Room', dataIndex: 'room_name', key: 'room_name' },
-          { title: 'Date', dataIndex: 'booking_date', render: (booking_date) => formatDate(booking_date) },
-          { title: 'Start', dataIndex: 'start_time', render: (start_time) => formatTime(start_time) },
-          { title: 'End', dataIndex: 'end_time', render: (end_time) => formatTime(end_time) },
-          { title: 'Status', dataIndex: 'status', render: (status: string) => <StatusTag status={status} /> },
-          {
-            title: 'Action',
-            render: (_, booking: Booking) => (
-              <Space>
-                <Button danger onClick={() => handleCancel(booking.id)} disabled={booking.status === 'cancelled'}>
-                  Cancel
-                </Button>
-              </Space>
-            ),
-          },
-        ]}
-      />
-    </Card>
+    <div className="records-page">
+
+      <div className="records-hero">
+        <div className="records-hero__copy">
+          <Typography.Text className="records-hero__eyebrow">
+            Student bookings
+          </Typography.Text>
+
+          <Typography.Title level={2} className="records-hero__title">
+            My Bookings
+          </Typography.Title>
+
+          <Typography.Paragraph className="records-hero__desc">
+            Track active requests and approved reservations that have not ended yet.
+          </Typography.Paragraph>
+
+          <div className="records-pills">
+            <span className="records-pill">{upcoming.length} active bookings</span>
+            <span className="records-pill">{pendingCount} pending</span>
+            <span className="records-pill">{approvedUpcomingCount} approved upcoming</span>
+          </div>
+        </div>
+
+        <div className="records-hero__aside">
+          <div className="records-hero__panel">
+            <Typography.Text className="records-hero__panel-label">
+              Current results
+            </Typography.Text>
+
+            <Typography.Title level={3} className="records-hero__panel-value">
+              {upcoming.length}
+            </Typography.Title>
+
+            <Typography.Paragraph className="records-hero__panel-copy">
+              booking{upcoming.length === 1 ? '' : 's'} still need your attention.
+            </Typography.Paragraph>
+          </div>
+        </div>
+      </div>
+
+      
+
+      <div className="records-toolbar">
+        <div className="records-toolbar__content">
+          <Typography.Text className="records-toolbar__title">
+            Active reservation list
+          </Typography.Text>
+
+          <Typography.Text className="records-toolbar__meta">
+            {upcoming.length} booking{upcoming.length === 1 ? '' : 's'} found
+          </Typography.Text>
+        </div>
+      </div>
+
+
+      <Card className="records-table-card">
+        <Table
+          rowKey="id"
+          loading={loading}
+          dataSource={upcoming}
+          pagination={{ pageSize: 6 }}
+          columns={[
+            { title: 'Room', dataIndex: 'room_name', key: 'room_name' },
+            { title: 'Date', dataIndex: 'booking_date', render: (booking_date) => formatDate(booking_date) },
+            { title: 'Start', dataIndex: 'start_time', render: (start_time) => formatTime(start_time) },
+            { title: 'End', dataIndex: 'end_time', render: (end_time) => formatTime(end_time) },
+            { title: 'Status', dataIndex: 'status', render: (status: string) => <StatusTag status={status} /> },
+            {
+              title: 'Action',
+              render: (_, booking: Booking) => (
+                <Space>
+                  <Button danger onClick={() => handleCancel(booking.id)} disabled={booking.status === 'cancelled'}>
+                    Cancel
+                  </Button>
+                </Space>
+              ),
+            },
+          ]}
+        />
+      </Card>
+
+    </div>
   );
+
 }
