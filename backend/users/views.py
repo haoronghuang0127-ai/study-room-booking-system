@@ -1,9 +1,16 @@
+from django.db.models import Count
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from rooms.permissions import IsRoleAdmin
 from .models import User
-from .serializers import RegisterSerializer, UserSerializer
+from .serializers import (
+    AdminUserCreateUpdateSerializer,
+    AdminUserListSerializer,
+    RegisterSerializer,
+    UserSerializer,
+)
 
 
 # define a view for registering new users
@@ -83,3 +90,65 @@ class ChangePasswordView(APIView):
             {"detail": "Password changed successfully. Please log in again."},
             status=status.HTTP_200_OK,
         )
+
+
+# define a view for admin to get all users
+class AdminUserListView(generics.ListAPIView):
+    serializer_class = AdminUserListSerializer
+    permission_classes = [IsRoleAdmin]
+
+    def get_queryset(self):
+        # annotate relation counts so the admin page can show user usage information
+        return User.objects.annotate(
+            booking_count=Count('student_bookings', distinct=True),
+            review_count=Count('reviews', distinct=True),
+            processed_booking_count=Count('processed_bookings', distinct=True),
+        ).order_by('id')
+
+
+# define a view for admin to create a new user
+class AdminUserCreateView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = AdminUserCreateUpdateSerializer
+    permission_classes = [IsRoleAdmin]
+
+
+# define a view for admin to update an existing user
+class AdminUserUpdateView(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = AdminUserCreateUpdateSerializer
+    permission_classes = [IsRoleAdmin]
+
+
+# define a view for admin to delete an existing user
+class AdminUserDeleteView(APIView):
+    permission_classes = [IsRoleAdmin]
+
+    def delete(self, request, pk):
+        try:
+            user = User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # do not allow the current admin to delete the account being used right now
+        if user == request.user:
+            return Response(
+                {"detail": "You cannot delete the current logged-in admin user."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # keep booking history and review history safe instead of deleting related records by cascade
+        if user.student_bookings.exists():
+            return Response(
+                {"detail": "Cannot delete user with booking records."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if user.reviews.exists():
+            return Response(
+                {"detail": "Cannot delete user with review records."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

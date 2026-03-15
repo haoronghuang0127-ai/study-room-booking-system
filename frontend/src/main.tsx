@@ -19,8 +19,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       theme={{
         algorithm: theme.defaultAlgorithm,
         token: {
-          colorPrimary: '#1677ff',
-          borderRadius: 10,
+          colorPrimary: '#1768ff',
+          borderRadius: 18,
+          colorBgLayout: '#f4f7fb',
+          colorBgContainer: '#ffffff',
+          colorText: '#10233f',
+          colorTextSecondary: '#617086',
+          fontFamily: "'Plus Jakarta Sans', 'Segoe UI', sans-serif",
         },
       }}
     >

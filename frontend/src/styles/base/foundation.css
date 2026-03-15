@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+  --page-bg: #eef2f7;
+  --surface: #ffffff;
+  --panel-bg: #fbfcfe;
+  --panel-border: #e4eaf3;
+  --text-strong: #14233b;
+  --text-muted: #6b7a90;
+  --primary: #1d63ff;
+  --primary-soft: #edf4ff;
+  --shadow-sm: 0 14px 36px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 24px 60px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 34px 80px rgba(29, 58, 112, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  font-family: var(--font-family);
+  color: var(--text-strong);
+  background:
+    radial-gradient(circle at top center, rgba(29, 99, 255, 0.06), transparent 22%),
+    linear-gradient(180deg, #f8fbff 0%, #eef2f7 100%);
+}
+
+body,
+#root {
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  background: rgba(29, 99, 255, 0.16);
+}
+
+.ant-layout {
+  background: transparent !important;
+}
+
+.ant-card {
+  border: 1px solid var(--panel-border);
+  border-radius: 24px !important;
+  background: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+
+.ant-btn {
+  font-weight: 600;
+}
+
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-select-selector,
+.ant-picker {
+  border-radius: 14px !important;
+}
+
+.ant-form-item-label > label {
+  font-weight: 600;
+  color: var(--text-strong) !important;
+}
+
+button:focus-visible,
+input:focus-visible,
+.ant-btn:focus-visible,
+.ant-input:focus-visible,
+.ant-select-focused .ant-select-selector,
+.ant-picker-focused {
+  outline: 3px solid rgba(29, 99, 255, 0.18) !important;
+  outline-offset: 2px;
+}

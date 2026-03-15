@@ -1,7 +1,9 @@
-import { Layout, Menu } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
+import { Button, Layout, Menu, Typography } from 'antd';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import AppHeader from '../AppHeader';
 import type { NavigationItem } from '../../types/navigation';
+import { getProfileRouteByRole } from '../../utils/defaultRoute';
 
 
 interface BaseLayoutProps{
@@ -23,44 +25,65 @@ export default function BaseLayout({items, defaultPath}: BaseLayoutProps) {
     }
 
     // Determine the selected menu item based on the current location
-    const selected = getSelectedKey(location, items,defaultPath);
+    const selected = getSelectedKey(location.pathname, items, defaultPath);
+
+    // Get the profile path based on the current layout type
+    const profilePath = getProfileRouteByRole(defaultPath === '/admin' ? 'admin' : 'student');
 
     return (
         // Render the layout with 100% viewport height
-        <Layout style={{ minHeight: '100vh' }}>
+        <Layout className="app-shell">
 
             {/* Render the header component */}
             <AppHeader />
 
             {/* Render the sidebar and content */}
-            <Layout>
-              {/* Render the sidebar with a breakpoint for responsiveness, and a menu with navigation items */}
-              <Layout.Sider breakpoint="lg" collapsedWidth="0" width={220} theme="light">
-                  <Menu
-                    mode="inline"
-                    selectedKeys={selected ? [selected] : []}
-                    items={items}
-                    onClick={handleMenuClick}
-                    style={{ height: '100%', borderInlineEnd: 0 }}
-                  />
-              </Layout.Sider>
+            <div className="app-shell__body">
 
-              
-              <Layout.Content style={{ padding: 24 }}>
-                  <Outlet />
+              {/* Render the sidebar with a menu and a white navigation card */}
+              <aside className="app-shell__aside">
+                  <div className="app-shell__nav">
+
+                    <Typography.Text className="app-shell__nav-label">
+                      Navigation
+                    </Typography.Text>
+
+                    <Menu
+                      mode="inline"
+                      selectedKeys={selected ? [selected] : []}
+                      items={items}
+                      onClick={handleMenuClick}
+                      className="app-shell__menu"
+                    />
+
+                    {/* Render a footer action for quick profile access */}
+                    <div className="app-shell__nav-footer">
+                      <Typography.Text className="app-shell__nav-footer-copy">
+                        Need account settings or password changes?
+                      </Typography.Text>
+
+                      <Button icon={<UserOutlined />} block onClick={() => navigate(profilePath)}>
+                        Open profile
+                      </Button>
+                    </div>
+                  </div>
+              </aside>
+
+              <Layout.Content className="app-shell__content">
+                  <div className="app-shell__panel">
+                    <Outlet />
+                  </div>
               </Layout.Content>
-            </Layout>
+            </div>
 
         </Layout>
     );
+
 }
 
 
 // function to determine the selected menu item based on the current location
-function getSelectedKey(location: any, items: NavigationItem[], defaultPath: string){
-  // Get the current pathname from the location object
-  const pathname = location.pathname;
-
+function getSelectedKey(pathname: string, items: NavigationItem[], defaultPath: string){
   // Keep defaultPath for the base route
   if (pathname === defaultPath) {
     return defaultPath;

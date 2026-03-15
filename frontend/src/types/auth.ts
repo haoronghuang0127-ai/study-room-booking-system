@@ -4,6 +4,7 @@ export interface User {
   username: string;
   email: string;
   role: 'student' | 'admin';
+  is_active?: boolean;
 }
 
 // Interface for login payload
@@ -31,4 +32,23 @@ export interface ChangePasswordPayload {
   current_password: string;
   new_password: string;
   confirm_password: string;
+}
+
+
+// Interface for admin user management list item
+export interface AdminUser extends User {
+  is_active: boolean;
+  booking_count: number;
+  review_count: number;
+  processed_booking_count: number;
+}
+
+
+// Interface for admin user management payload
+export interface AdminUserPayload {
+  username: string;
+  email: string;
+  password?: string;
+  role: 'student' | 'admin';
+  is_active: boolean;
 }
